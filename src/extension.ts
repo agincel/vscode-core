@@ -140,17 +140,18 @@ export function activate(context: vscode.ExtensionContext): void {
                     ci.documentation = new vscode.MarkdownString("`" + api.Classes[i].Name + "." + api.Classes[i].Properties[j].Name + " | " + api.Classes[i].Properties[j].Type + "`");
                     completions.push(ci);
                 }
-                if (api.Classes[i].Events !== undefined) {
-                    for (let j = 0; j < api.Classes[i].Events.length; j++) {
-                        const ci: vscode.CompletionItem = new vscode.CompletionItem(api.Classes[i].Events[j].Name, vscode.CompletionItemKind.Field);
-                        let docString = "`" + api.Classes[i].Name + "." + api.Classes[i].Events[j].Name;
-                        if (api.Classes[i].Events[j].Parameters !== undefined) {
+                const numEvents = api.Classes[i].Events;
+                if (numEvents !== undefined) {
+                    for (let j = 0; j < numEvents.length; j++) {
+                        const ci: vscode.CompletionItem = new vscode.CompletionItem(numEvents[j].Name, vscode.CompletionItemKind.Field);
+                        let docString = "`" + api.Classes[i].Name + "." + numEvents[j].Name;
+                        if (numEvents[j].Parameters !== undefined) {
                             docString += "(";
-                            for (let k = 0; k < api.Classes[i].Events[j].Parameters.length; k++) {
+                            for (let k = 0; k < numEvents[j].Parameters.length; k++) {
                                 if (k > 0) {
                                     docString += ", ";
                                 }
-                                docString += api.Classes[i].Events[j].Parameters[k].Type;
+                                docString += numEvents[j].Parameters[k].Type;
                             }
                             docString += ")";
                         }
