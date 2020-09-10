@@ -116,7 +116,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }, ":")
     );
 
-    // Create Property Providers
+    // Create Property and Event Providers
     // Since Lua is untyped, if they type a . after anything, bring up all suggestions.
     providers.push(vscode.languages.registerCompletionItemProvider(SCHEME, {
         provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
@@ -139,6 +139,24 @@ export function activate(context: vscode.ExtensionContext): void {
                     const ci: vscode.CompletionItem = new vscode.CompletionItem(api.Classes[i].Properties[j].Name, vscode.CompletionItemKind.Field);
                     ci.documentation = new vscode.MarkdownString("`" + api.Classes[i].Name + "." + api.Classes[i].Properties[j].Name + " | " + api.Classes[i].Properties[j].Type + "`");
                     completions.push(ci);
+                }
+                if (api.Classes[i].Events !== undefined) {
+                    for (let j = 0; j < api.Classes[i].Events.length; j++) {
+                        const ci: vscode.CompletionItem = new vscode.CompletionItem(api.Classes[i].Events[j].Name, vscode.CompletionItemKind.Field);
+                        let docString = "`" + api.Classes[i].Name + "." + api.Classes[i].Events[j].Name
+                        if (api.Classes[i].Events[j].Parameters !== undefined) {
+                            docString += "("
+                            for (let k = 0; k < api.Classes[i].Events[j].Parameters.length; k++) {
+                                if (k > 0) {
+                                    docString += ", "
+                                }
+                                docString += api.Classes[i].Events[j].Parameters[k].Type
+                            }
+                            docString += ")"
+                        }
+                        ci.documentation = new vscode.MarkdownString(docString);
+                        completions.push(ci);
+                    }
                 }
             }
 
